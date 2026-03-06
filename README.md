@@ -8,3 +8,6 @@ Aplikace bude pracovat s několika typy uživatelských rolí. Anonymní návšt
 Důležitou funkcí aplikace bude také možnost filtrování obchodů podle různých parametrů, například podle strategie, aktiva nebo časového období. Díky tomu bude možné analyzovat výkonnost konkrétních obchodních přístupů a identifikovat silné a slabé stránky obchodování.
 
 Výsledkem projektu bude přehledný a praktický nástroj pro správu trading journalu, který pomůže obchodníkům systematicky vyhodnocovat jejich obchodní výsledky a zlepšovat jejich rozhodování na finančních trzích.
+<img width="1500" height="2000" alt="image" src="https://github.com/user-attachments/assets/18655116-7e91-47cd-8763-3158e267aac7" />
+<img width="1500" height="2000" alt="image" src="https://github.com/user-attachments/assets/bf0dd03a-0ac3-4bf1-b618-791bee08bb9e" />
+
