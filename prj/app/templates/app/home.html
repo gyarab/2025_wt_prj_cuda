@@ -1,0 +1,43 @@
+{% extends "app/base.html" %}
+
+{% block title %}Domů{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <h1>Trading Journal</h1>
+        <p>
+            Aplikace pro zapisování obchodů, správu strategií a sledování výsledků.
+        </p>
+    </div>
+
+    <div class="stats">
+        <div class="stat-box">
+            <h3>Počet assetů</h3>
+            <p>{{ assets_count }}</p>
+        </div>
+
+        <div class="stat-box">
+            <h3>Počet strategií</h3>
+            <p>{{ strategies_count }}</p>
+        </div>
+
+        <div class="stat-box">
+            <h3>Počet tradů</h3>
+            <p>{{ trades_count }}</p>
+        </div>
+
+        <div class="stat-box">
+            <h3>Celkový P/L</h3>
+            <p class="{% if total_profit_loss >= 0 %}profit{% else %}loss{% endif %}">
+                {{ total_profit_loss }}
+            </p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Rychlá navigace</h2>
+        <a class="btn" href="{% url 'trade_list' %}">Zobrazit trady</a>
+        <a class="btn" href="{% url 'asset_list' %}">Zobrazit assets</a>
+        <a class="btn" href="{% url 'strategy_list' %}">Zobrazit strategie</a>
+    </div>
+{% endblock %}

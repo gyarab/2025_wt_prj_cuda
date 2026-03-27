@@ -1,0 +1,52 @@
+{% extends "app/base.html" %}
+
+{% block title %}Trades{% endblock %}
+
+{% block content %}
+    <h1>Trades</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Asset</th>
+                <th>Strategy</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Entry</th>
+                <th>Exit</th>
+                <th>Size</th>
+                <th>Date</th>
+                <th>P/L</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trade in trades %}
+            <tr>
+                <td>{{ trade.id }}</td>
+                <td>{{ trade.asset }}</td>
+                <td>{{ trade.strategy }}</td>
+                <td>{{ trade.trade_type }}</td>
+                <td>{{ trade.status }}</td>
+                <td>{{ trade.entry_price }}</td>
+                <td>{{ trade.exit_price }}</td>
+                <td>{{ trade.position_size }}</td>
+                <td>{{ trade.date }}</td>
+                <td>
+                    {% if trade.realized_profit_loss is not None %}
+                        <span class="{% if trade.realized_profit_loss >= 0 %}profit{% else %}loss{% endif %}">
+                            {{ trade.realized_profit_loss }}
+                        </span>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10">Žádné trady nebyly nalezeny.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
