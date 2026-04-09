@@ -1,0 +1,38 @@
+- model: app.trade
+  pk: 1
+  fields:
+    user: 1
+    asset: BTC/USD
+    position_type: long
+    entry_price: 42000.0
+    exit_price: 43500.0
+    volume: 0.1
+    profit_loss: 1500.0
+    date: 2024-03-10 12:00:00+00:00
+    strategy: 1
+
+- model: app.trade
+  pk: 2
+  fields:
+    user: 2
+    asset: AAPL
+    position_type: short
+    entry_price: 180.0
+    exit_price: 175.0
+    volume: 10
+    profit_loss: 50.0
+    date: 2024-03-11 14:00:00+00:00
+    strategy: 2
+
+- model: app.trade
+  pk: 3
+  fields:
+    user: 1
+    asset: ETH/USD
+    position_type: long
+    entry_price: 2500.0
+    exit_price: 2400.0
+    volume: 1
+    profit_loss: -100.0
+    date: 2024-03-12 16:00:00+00:00
+    strategy: 3

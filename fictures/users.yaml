@@ -1,0 +1,23 @@
+- model: auth.user
+  pk: 1
+  fields:
+    username: trader1
+    password: pbkdf2_sha256$dummy
+    is_superuser: false
+    is_staff: false
+    is_active: true
+    date_joined: 2024-01-01 10:00:00+00:00
+    groups: []
+    user_permissions: []
+
+- model: auth.user
+  pk: 2
+  fields:
+    username: trader2
+    password: pbkdf2_sha256$dummy
+    is_superuser: false
+    is_staff: false
+    is_active: true
+    date_joined: 2024-02-01 10:00:00+00:00
+    groups: []
+    user_permissions: []

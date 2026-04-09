@@ -1,0 +1,17 @@
+- model: app.strategy
+  pk: 1
+  fields:
+    name: Breakout
+    description: Obchodování průrazů
+
+- model: app.strategy
+  pk: 2
+  fields:
+    name: Scalping
+    description: Krátkodobé obchody
+
+- model: app.strategy
+  pk: 3
+  fields:
+    name: Swing
+    description: Střednědobé držení pozic
