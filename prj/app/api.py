@@ -1,10 +1,13 @@
 from ninja import NinjaAPI, Schema
 from typing import List, Optional
 from django.shortcuts import get_object_or_404
+from datetime import date
 
 from .models import Trade, Asset, Strategy
 
 api = NinjaAPI()
+
+
 class TradeSchema(Schema):
     id: int
     asset: str
@@ -17,13 +20,14 @@ class TradeSchema(Schema):
     exit_price: Optional[float] = None
 
     position_size: float
-    date: str
-    closed_date: Optional[str] = None
+    date: date
+    closed_date: Optional[date] = None
 
-    notes: str
+    notes: Optional[str] = ""
 
     current_profit_loss: Optional[float] = None
     realized_profit_loss: Optional[float] = None
+
 
 class TradeCreateSchema(Schema):
     asset_id: int
@@ -36,38 +40,13 @@ class TradeCreateSchema(Schema):
     exit_price: Optional[float] = None
 
     position_size: float
-    date: str
-    closed_date: Optional[str] = None
+    date: date
+    closed_date: Optional[date] = None
 
     notes: Optional[str] = ""
 
-@api.get("/trade", response=List[TradeSchema])
-def list_trades(request):
-    trades = Trade.objects.select_related("asset", "strategy")
 
-    return [
-        {
-            "id": t.id,
-            "asset": t.asset.symbol,
-            "strategy": t.strategy.name if t.strategy else None,
-            "trade_type": t.trade_type,
-            "status": t.status,
-            "entry_price": t.entry_price,
-            "exit_price": t.exit_price,
-            "position_size": t.position_size,
-            "date": t.date,
-            "closed_date": t.closed_date,
-            "notes": t.notes,
-            "current_profit_loss": t.current_profit_loss,
-            "realized_profit_loss": t.realized_profit_loss,
-        }
-        for t in trades
-    ]
-
-@api.get("/trade/{trade_id}", response=TradeSchema)
-def get_trade(request, trade_id: int):
-    t = get_object_or_404(Trade.objects.select_related("asset", "strategy"), id=trade_id)
-
+def trade_to_dict(t: Trade):
     return {
         "id": t.id,
         "asset": t.asset.symbol,
@@ -84,11 +63,24 @@ def get_trade(request, trade_id: int):
         "realized_profit_loss": t.realized_profit_loss,
     }
 
-@api.post("/trade", response=TradeSchema)
+
+@api.get("/trade/", response=List[TradeSchema])
+def list_trades(request):
+    trades = Trade.objects.select_related("asset", "strategy")
+    return [trade_to_dict(t) for t in trades]
+
+
+@api.get("/trade/{trade_id}", response=TradeSchema)
+def get_trade(request, trade_id: int):
+    t = get_object_or_404(Trade.objects.select_related("asset", "strategy"), id=trade_id)
+    return trade_to_dict(t)
+
+
+@api.post("/trade/", response=TradeSchema)
 def create_trade(request, data: TradeCreateSchema):
     asset = get_object_or_404(Asset, id=data.asset_id)
-    strategy = None
 
+    strategy = None
     if data.strategy_id:
         strategy = get_object_or_404(Strategy, id=data.strategy_id)
 
@@ -105,7 +97,8 @@ def create_trade(request, data: TradeCreateSchema):
         notes=data.notes,
     )
 
-    return get_trade(request, trade.id)
+    return trade_to_dict(trade)
+
 
 @api.put("/trade/{trade_id}", response=TradeSchema)
 def update_trade(request, trade_id: int, data: TradeCreateSchema):
@@ -129,7 +122,8 @@ def update_trade(request, trade_id: int, data: TradeCreateSchema):
 
     trade.save()
 
-    return get_trade(request, trade.id)
+    return trade_to_dict(trade)
+
 
 @api.post("/asset/{asset_id}/update-price")
 def update_price(request, asset_id: int, price: float):
@@ -137,4 +131,3 @@ def update_price(request, asset_id: int, price: float):
     asset.current_price = price
     asset.save()
     return {"success": True}
-
