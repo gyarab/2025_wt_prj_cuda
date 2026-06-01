@@ -1,7 +1,10 @@
 from decimal import Decimal
 from django.shortcuts import render
 from .models import Asset, Strategy, Trade
+from django.shortcuts import render
 
+def api_playground(request):
+    return render(request, "api_playground.html")
 
 def home(request):
     trades = Trade.objects.select_related("asset", "strategy").all()
