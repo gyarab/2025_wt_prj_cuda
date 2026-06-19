@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,9 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-_-cvo_*7-uep9un(e$fw6=k^&0mrhvmxms$ohdft)=fk$4mzz6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
+
+CSRF_TRUSTED_ORIGINS = [
+    o for o in os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',') if o
+]
 
 
 # Application definition
@@ -76,7 +81,9 @@ WSGI_APPLICATION = 'prj.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # V kontejneru míří DJANGO_DB_PATH na perzistentní volume (/data/db/db.sqlite3),
+        # aby data přežila redeploy. Lokálně zůstává db.sqlite3 vedle manage.py.
+        'NAME': os.environ.get('DJANGO_DB_PATH', BASE_DIR / 'db.sqlite3'),
     }
 }
 
@@ -114,5 +121,24 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
+
+STATIC_URL = 'static/'
+# `collectstatic` posbírá statické soubory (vč. adminu) sem; v kontejneru je to
+# sdílený volume, ze kterého je servíruje nginx. Lokálně se nepoužívá.
+STATIC_ROOT = os.environ.get('DJANGO_STATIC_ROOT', BASE_DIR / 'staticfiles')
+
+# Uživatelsky nahrávaná média (zatím se nepoužívají — postery/fotky jsou URL),
+# ale necháme je správně nastavené pro budoucí ImageField a pro nginx /media/.
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.environ.get('DJANGO_MEDIA_ROOT', BASE_DIR / 'media')
+
+# Za reverzní proxy (nginx/traefik), která ukončuje HTTPS: věř hlavičce o schématu,
+# aby request.is_secure(), CSRF a redirecty fungovaly správně.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/6.0/howto/static-files/
+# Kam míří odkaz na Vue SPA z rozcestníku (`/`). V dev běží Vue na vlastním Vite
+# serveru (:5173), v produkci ho pod /app/ servíruje nginx z buildu (frontend/dist).
+VUE_FRONTEND_URL = os.environ.get('VUE_FRONTEND_URL', 'http://localhost:5173/')
 
 STATIC_URL = 'static/'
