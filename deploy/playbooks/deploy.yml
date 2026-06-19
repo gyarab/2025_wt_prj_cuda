@@ -5,7 +5,7 @@
 #
 # Spouští se z GitHub Actions (.github/workflows/deploy.yml) nebo ručně z adresáře deploy/:
 #   ansible-playbook playbooks/deploy.yml
-- name: Deploy FilmDB
+- name: tradex
   hosts: web
   gather_facts: false
   tasks:
@@ -13,7 +13,7 @@
     # db.sqlite3). Běží na controlleru (tam, kde je repo), výsledek pak pošleme na server.
     - name: Create source archive from committed files (on controller)
       ansible.builtin.command:
-        cmd: git archive --format=tar.gz -o /tmp/filmdb-src.tar.gz HEAD
+        cmd: git archive --format=tar.gz -o /tmp/tradex-src.tar.gz HEAD
         chdir: "{{ playbook_dir }}/../.."
       delegate_to: localhost
       run_once: true
@@ -27,7 +27,7 @@
 
     - name: Upload and unpack source on the server
       ansible.builtin.unarchive:
-        src: /tmp/filmdb-src.tar.gz
+        src: /tmp/tradex-src.tar.gz
         dest: "{{ project_dir }}"
         remote_src: false
 
